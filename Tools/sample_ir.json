@@ -1,0 +1,69 @@
+{
+  "data_ir": {
+    "state": {
+      "num1": { "type": "number", "initial": 0 },
+      "num2": { "type": "number", "initial": 0 },
+      "result": { "type": "number", "initial": 0 }
+    },
+    "derived": {
+      "sumPreview": { "type": "number", "expr": "num1 + num2" }
+    }
+  },
+  "behaviour_ir": {
+    "events": {
+      "evt_compute_sum": {
+        "type": "mutation",
+        "updates": [
+          { "target": "result", "expr": "num1 + num2" }
+        ]
+      }
+    }
+  },
+  "component_ir": {
+    "library": "antd",
+    "theme": { "primaryColor": "#22c55e" },
+    "components": {
+      "inp_num1": {
+        "type": "InputNumber",
+        "label": "Num 1",
+        "bind": "num1",
+        "onClick": null,
+        "props": { "placeholder": "Enter first number" },
+        "styles": {}
+      },
+      "inp_num2": {
+        "type": "InputNumber",
+        "label": "Num 2",
+        "bind": "num2",
+        "onClick": null,
+        "props": { "placeholder": "Enter second number" },
+        "styles": {}
+      },
+      "btn_sum": {
+        "type": "Button",
+        "label": "Compute Sum",
+        "bind": null,
+        "onClick": "evt_compute_sum",
+        "props": { "type": "primary" },
+        "styles": { "backgroundColor": "#1677ff", "borderColor": "#1677ff" }
+      },
+      "txt_result": {
+        "type": "Typography.Text",
+        "label": "Result",
+        "bind": "result",
+        "onClick": null,
+        "props": {},
+        "styles": {}
+      }
+    }
+  },
+  "layout_ir": {
+    "root": "root_stack",
+    "children": {
+      "root_stack": ["inp_num1", "inp_num2", "btn_sum", "txt_result"]
+    },
+    "layout": {
+      "root_stack": { "type": "vertical", "gap": 12 }
+    }
+  }
+}

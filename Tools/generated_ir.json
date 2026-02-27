@@ -1,0 +1,890 @@
+{
+  "page_ir": {
+    "page_goal": "Calculate and display student GPA based on five subject marks input by the user",
+    "style": {
+      "tone": "professional",
+      "theme": "light",
+      "density": "comfortable",
+      "color_intent": "Primary: sky-blue (#0ea5e9), Calculate button: green (#22c55e), Page background: warm yellow (#fef9c3), clean high-contrast design"
+    },
+    "accessibility": {
+      "required_labels": [
+        "Subject 1 mark input label",
+        "Subject 2 mark input label",
+        "Subject 3 mark input label",
+        "Subject 4 mark input label",
+        "Subject 5 mark input label",
+        "Calculate GPA button aria-label",
+        "GPA result region aria-label",
+        "Success/error alert role=alert"
+      ]
+    },
+    "responsive": {
+      "breakpoints": {
+        "mobile": "375px",
+        "tablet": "768px",
+        "desktop": "1440px"
+      },
+      "collapse_rules": [
+        "Stack form fields vertically on mobile (375px+)",
+        "Two-column grid for inputs on tablet (768px+)",
+        "Single centered column layout on desktop (1440px+)"
+      ],
+      "hidden_on_small": []
+    },
+    "constraints": [
+      "Use SVG icons only (Heroicons/Lucide), no emojis",
+      "Smooth 150-300ms transitions on interactive elements",
+      "No layout shift on hover",
+      "cursor-pointer on interactive elements",
+      "Sufficient contrast in light and dark modes",
+      "No horizontal scroll on any breakpoint",
+      "Validate marks are numeric and within range 0-100",
+      "Error messages must specify which subject marks are invalid"
+    ]
+  },
+  "data_ir": {
+    "state": {
+      "subjectMarks": {
+        "type": "array",
+        "initial": [
+          85,
+          90,
+          78,
+          92,
+          88
+        ],
+        "required": true,
+        "constraints": {
+          "length": 5,
+          "itemType": "number",
+          "itemMin": 0,
+          "itemMax": 100
+        }
+      },
+      "isCalculating": {
+        "type": "boolean",
+        "initial": false,
+        "required": true,
+        "constraints": {}
+      },
+      "gpaResult": {
+        "type": "number",
+        "initial": null,
+        "required": false,
+        "constraints": {
+          "min": 0,
+          "max": 100
+        }
+      },
+      "messageType": {
+        "type": "enum",
+        "initial": null,
+        "required": false,
+        "constraints": {
+          "values": [
+            "success",
+            "error",
+            null
+          ]
+        }
+      },
+      "messageText": {
+        "type": "string",
+        "initial": "",
+        "required": false,
+        "constraints": {}
+      },
+      "fieldErrors": {
+        "type": "object",
+        "initial": {},
+        "required": false,
+        "constraints": {}
+      }
+    },
+    "derived": {
+      "allMarksValid": {
+        "type": "boolean",
+        "expr": "state.subjectMarks.every(m => typeof m === 'number' && m >= 0 && m <= 100)"
+      },
+      "computedGPA": {
+        "type": "number",
+        "expr": "state.subjectMarks.reduce((sum, m) => sum + m, 0) / 5"
+      }
+    }
+  },
+  "data_model_ir": {
+    "entities": {
+      "SubjectMark": {
+        "name": "SubjectMark",
+        "fields": [
+          "subjectIndex",
+          "subjectLabel",
+          "mark"
+        ],
+        "computed": [
+          "isValid"
+        ],
+        "display_fields": [
+          "subjectLabel",
+          "mark"
+        ],
+        "filters": []
+      },
+      "GPAResult": {
+        "name": "GPAResult",
+        "fields": [
+          "gpa",
+          "totalMarks",
+          "subjectCount"
+        ],
+        "computed": [
+          "percentage"
+        ],
+        "display_fields": [
+          "gpa",
+          "totalMarks"
+        ],
+        "filters": []
+      }
+    }
+  },
+  "behaviour_ir": {
+    "events": {
+      "onSubject1Change": {
+        "type": "mutation",
+        "updates": [
+          {
+            "target": "state.subjectMarks[0]",
+            "expr": "parseFloat(event.target.value)"
+          },
+          {
+            "target": "state.fieldErrors.subject1",
+            "expr": "isNaN(parseFloat(event.target.value)) || parseFloat(event.target.value) < 0 || parseFloat(event.target.value) > 100 ? 'Subject 1: Enter a valid number between 0 and 100' : null"
+          },
+          {
+            "target": "state.gpaResult",
+            "expr": "null"
+          },
+          {
+            "target": "state.messageType",
+            "expr": "null"
+          },
+          {
+            "target": "state.messageText",
+            "expr": "''"
+          }
+        ]
+      },
+      "onSubject2Change": {
+        "type": "mutation",
+        "updates": [
+          {
+            "target": "state.subjectMarks[1]",
+            "expr": "parseFloat(event.target.value)"
+          },
+          {
+            "target": "state.fieldErrors.subject2",
+            "expr": "isNaN(parseFloat(event.target.value)) || parseFloat(event.target.value) < 0 || parseFloat(event.target.value) > 100 ? 'Subject 2: Enter a valid number between 0 and 100' : null"
+          },
+          {
+            "target": "state.gpaResult",
+            "expr": "null"
+          },
+          {
+            "target": "state.messageType",
+            "expr": "null"
+          },
+          {
+            "target": "state.messageText",
+            "expr": "''"
+          }
+        ]
+      },
+      "onSubject3Change": {
+        "type": "mutation",
+        "updates": [
+          {
+            "target": "state.subjectMarks[2]",
+            "expr": "parseFloat(event.target.value)"
+          },
+          {
+            "target": "state.fieldErrors.subject3",
+            "expr": "isNaN(parseFloat(event.target.value)) || parseFloat(event.target.value) < 0 || parseFloat(event.target.value) > 100 ? 'Subject 3: Enter a valid number between 0 and 100' : null"
+          },
+          {
+            "target": "state.gpaResult",
+            "expr": "null"
+          },
+          {
+            "target": "state.messageType",
+            "expr": "null"
+          },
+          {
+            "target": "state.messageText",
+            "expr": "''"
+          }
+        ]
+      },
+      "onSubject4Change": {
+        "type": "mutation",
+        "updates": [
+          {
+            "target": "state.subjectMarks[3]",
+            "expr": "parseFloat(event.target.value)"
+          },
+          {
+            "target": "state.fieldErrors.subject4",
+            "expr": "isNaN(parseFloat(event.target.value)) || parseFloat(event.target.value) < 0 || parseFloat(event.target.value) > 100 ? 'Subject 4: Enter a valid number between 0 and 100' : null"
+          },
+          {
+            "target": "state.gpaResult",
+            "expr": "null"
+          },
+          {
+            "target": "state.messageType",
+            "expr": "null"
+          },
+          {
+            "target": "state.messageText",
+            "expr": "''"
+          }
+        ]
+      },
+      "onSubject5Change": {
+        "type": "mutation",
+        "updates": [
+          {
+            "target": "state.subjectMarks[4]",
+            "expr": "parseFloat(event.target.value)"
+          },
+          {
+            "target": "state.fieldErrors.subject5",
+            "expr": "isNaN(parseFloat(event.target.value)) || parseFloat(event.target.value) < 0 || parseFloat(event.target.value) > 100 ? 'Subject 5: Enter a valid number between 0 and 100' : null"
+          },
+          {
+            "target": "state.gpaResult",
+            "expr": "null"
+          },
+          {
+            "target": "state.messageType",
+            "expr": "null"
+          },
+          {
+            "target": "state.messageText",
+            "expr": "''"
+          }
+        ]
+      }
+    },
+    "actions": {
+      "calculateGPA": {
+        "action_id": "calculateGPA",
+        "trigger": "button_click",
+        "target_component_id": "calculateButton",
+        "operation": "compute_gpa",
+        "payload": {
+          "marks": "state.subjectMarks"
+        },
+        "validation_rules": [
+          "{\"error_message\": \"Subject 1: Must be a number between 0 and 100\", \"field\": \"state.subjectMarks[0]\", \"rule\": \"isNumeric && inRange(0,100)\"}",
+          "{\"error_message\": \"Subject 2: Must be a number between 0 and 100\", \"field\": \"state.subjectMarks[1]\", \"rule\": \"isNumeric && inRange(0,100)\"}",
+          "{\"error_message\": \"Subject 3: Must be a number between 0 and 100\", \"field\": \"state.subjectMarks[2]\", \"rule\": \"isNumeric && inRange(0,100)\"}",
+          "{\"error_message\": \"Subject 4: Must be a number between 0 and 100\", \"field\": \"state.subjectMarks[3]\", \"rule\": \"isNumeric && inRange(0,100)\"}",
+          "{\"error_message\": \"Subject 5: Must be a number between 0 and 100\", \"field\": \"state.subjectMarks[4]\", \"rule\": \"isNumeric && inRange(0,100)\"}"
+        ],
+        "requires_confirmation": false,
+        "updates": [
+          {
+            "target": "state.isCalculating",
+            "expr": "true"
+          },
+          {
+            "target": "state.gpaResult",
+            "expr": "state.subjectMarks.reduce((sum, m) => sum + m, 0) / 5"
+          },
+          {
+            "target": "state.isCalculating",
+            "expr": "false"
+          },
+          {
+            "target": "state.messageType",
+            "expr": "'success'"
+          },
+          {
+            "target": "state.messageText",
+            "expr": "'GPA calculated successfully'"
+          }
+        ]
+      }
+    },
+    "feedback": {
+      "calculateGPA": {
+        "action_id": "calculateGPA",
+        "loading_indicator": "spinner",
+        "success_message": "GPA calculated successfully",
+        "error_message": "Please fix the invalid marks before calculating. Check the highlighted fields.",
+        "ui_updates": [
+          {
+            "target": "state.messageType",
+            "expr": "validationPassed ? 'success' : 'error'"
+          },
+          {
+            "target": "state.messageText",
+            "expr": "validationPassed ? 'GPA calculated successfully' : invalidFieldMessages.join('; ')"
+          },
+          {
+            "target": "state.isCalculating",
+            "expr": "false"
+          }
+        ]
+      }
+    }
+  },
+  "component_ir": {
+    "library": "antd",
+    "theme": {
+      "primaryColor": "#0ea5e9",
+      "secondaryColor": "#0369a1",
+      "fontFamily": "Inter, system-ui, sans-serif",
+      "borderRadius": 8
+    },
+    "components": {
+      "pageWrapper": {
+        "type": "div",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "role": "main"
+        },
+        "styles": {
+          "minHeight": "100vh",
+          "width": "100%",
+          "backgroundColor": "#fef9c3",
+          "display": "flex",
+          "alignItems": "center",
+          "justifyContent": "center",
+          "padding": "24px 16px",
+          "boxSizing": "border-box",
+          "overflowX": "hidden"
+        }
+      },
+      "formCard": {
+        "type": "Card",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "aria-label": "GPA Calculator Form"
+        },
+        "styles": {
+          "width": "100%",
+          "maxWidth": "520px",
+          "backgroundColor": "#ffffff",
+          "borderRadius": "12px",
+          "boxShadow": "0 4px 24px rgba(0,0,0,0.10)",
+          "padding": "32px"
+        }
+      },
+      "pageTitle": {
+        "type": "Typography.Title",
+        "label": "GPA Calculator",
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "level": 2,
+          "aria-label": "GPA Calculator"
+        },
+        "styles": {
+          "color": "#0369a1",
+          "textAlign": "center",
+          "marginBottom": "8px",
+          "fontSize": "28px",
+          "fontWeight": "700"
+        }
+      },
+      "pageSubtitle": {
+        "type": "Typography.Text",
+        "label": "Enter marks for 5 subjects (0–100) to calculate your GPA",
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "type": "secondary"
+        },
+        "styles": {
+          "display": "block",
+          "textAlign": "center",
+          "marginBottom": "28px",
+          "color": "#64748b",
+          "fontSize": "14px"
+        }
+      },
+      "subject1FormItem": {
+        "type": "Form.Item",
+        "label": "Subject 1",
+        "bind": "state.fieldErrors.subject1",
+        "onClick": null,
+        "props": {
+          "htmlFor": "subject1Input",
+          "validateStatus": "state.fieldErrors.subject1 ? 'error' : ''",
+          "help": "state.fieldErrors.subject1 || ''"
+        },
+        "styles": {
+          "marginBottom": "16px"
+        }
+      },
+      "subject1Input": {
+        "type": "InputNumber",
+        "label": "Subject 1 Mark",
+        "bind": "state.subjectMarks[0]",
+        "onClick": null,
+        "props": {
+          "id": "subject1Input",
+          "aria-label": "Subject 1 mark",
+          "placeholder": "Enter mark (0-100)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "onChange": "onSubject1Change",
+          "style": {
+            "width": "100%"
+          }
+        },
+        "styles": {
+          "width": "100%",
+          "borderRadius": "8px",
+          "transition": "border-color 200ms ease"
+        }
+      },
+      "subject2FormItem": {
+        "type": "Form.Item",
+        "label": "Subject 2",
+        "bind": "state.fieldErrors.subject2",
+        "onClick": null,
+        "props": {
+          "htmlFor": "subject2Input",
+          "validateStatus": "state.fieldErrors.subject2 ? 'error' : ''",
+          "help": "state.fieldErrors.subject2 || ''"
+        },
+        "styles": {
+          "marginBottom": "16px"
+        }
+      },
+      "subject2Input": {
+        "type": "InputNumber",
+        "label": "Subject 2 Mark",
+        "bind": "state.subjectMarks[1]",
+        "onClick": null,
+        "props": {
+          "id": "subject2Input",
+          "aria-label": "Subject 2 mark",
+          "placeholder": "Enter mark (0-100)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "onChange": "onSubject2Change",
+          "style": {
+            "width": "100%"
+          }
+        },
+        "styles": {
+          "width": "100%",
+          "borderRadius": "8px",
+          "transition": "border-color 200ms ease"
+        }
+      },
+      "subject3FormItem": {
+        "type": "Form.Item",
+        "label": "Subject 3",
+        "bind": "state.fieldErrors.subject3",
+        "onClick": null,
+        "props": {
+          "htmlFor": "subject3Input",
+          "validateStatus": "state.fieldErrors.subject3 ? 'error' : ''",
+          "help": "state.fieldErrors.subject3 || ''"
+        },
+        "styles": {
+          "marginBottom": "16px"
+        }
+      },
+      "subject3Input": {
+        "type": "InputNumber",
+        "label": "Subject 3 Mark",
+        "bind": "state.subjectMarks[2]",
+        "onClick": null,
+        "props": {
+          "id": "subject3Input",
+          "aria-label": "Subject 3 mark",
+          "placeholder": "Enter mark (0-100)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "onChange": "onSubject3Change",
+          "style": {
+            "width": "100%"
+          }
+        },
+        "styles": {
+          "width": "100%",
+          "borderRadius": "8px",
+          "transition": "border-color 200ms ease"
+        }
+      },
+      "subject4FormItem": {
+        "type": "Form.Item",
+        "label": "Subject 4",
+        "bind": "state.fieldErrors.subject4",
+        "onClick": null,
+        "props": {
+          "htmlFor": "subject4Input",
+          "validateStatus": "state.fieldErrors.subject4 ? 'error' : ''",
+          "help": "state.fieldErrors.subject4 || ''"
+        },
+        "styles": {
+          "marginBottom": "16px"
+        }
+      },
+      "subject4Input": {
+        "type": "InputNumber",
+        "label": "Subject 4 Mark",
+        "bind": "state.subjectMarks[3]",
+        "onClick": null,
+        "props": {
+          "id": "subject4Input",
+          "aria-label": "Subject 4 mark",
+          "placeholder": "Enter mark (0-100)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "onChange": "onSubject4Change",
+          "style": {
+            "width": "100%"
+          }
+        },
+        "styles": {
+          "width": "100%",
+          "borderRadius": "8px",
+          "transition": "border-color 200ms ease"
+        }
+      },
+      "subject5FormItem": {
+        "type": "Form.Item",
+        "label": "Subject 5",
+        "bind": "state.fieldErrors.subject5",
+        "onClick": null,
+        "props": {
+          "htmlFor": "subject5Input",
+          "validateStatus": "state.fieldErrors.subject5 ? 'error' : ''",
+          "help": "state.fieldErrors.subject5 || ''"
+        },
+        "styles": {
+          "marginBottom": "24px"
+        }
+      },
+      "subject5Input": {
+        "type": "InputNumber",
+        "label": "Subject 5 Mark",
+        "bind": "state.subjectMarks[4]",
+        "onClick": null,
+        "props": {
+          "id": "subject5Input",
+          "aria-label": "Subject 5 mark",
+          "placeholder": "Enter mark (0-100)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "onChange": "onSubject5Change",
+          "style": {
+            "width": "100%"
+          }
+        },
+        "styles": {
+          "width": "100%",
+          "borderRadius": "8px",
+          "transition": "border-color 200ms ease"
+        }
+      },
+      "calculateButton": {
+        "type": "Button",
+        "label": "Calculate GPA",
+        "bind": "state.isCalculating",
+        "onClick": "calculateGPA",
+        "props": {
+          "type": "primary",
+          "htmlType": "submit",
+          "aria-label": "Calculate GPA from entered subject marks",
+          "loading": "state.isCalculating",
+          "block": true,
+          "icon": "CheckCircleIcon"
+        },
+        "styles": {
+          "backgroundColor": "#22c55e",
+          "borderColor": "#16a34a",
+          "color": "#ffffff",
+          "height": "48px",
+          "fontSize": "16px",
+          "fontWeight": "600",
+          "borderRadius": "8px",
+          "cursor": "pointer",
+          "transition": "background-color 200ms ease, transform 150ms ease",
+          "width": "100%"
+        }
+      },
+      "feedbackContainer": {
+        "type": "div",
+        "label": null,
+        "bind": "state.messageType",
+        "onClick": null,
+        "props": {
+          "role": "alert",
+          "aria-live": "polite",
+          "aria-atomic": "true"
+        },
+        "styles": {
+          "marginTop": "16px",
+          "minHeight": "40px",
+          "transition": "opacity 200ms ease"
+        }
+      },
+      "successAlert": {
+        "type": "Alert",
+        "label": null,
+        "bind": "state.messageText",
+        "onClick": null,
+        "props": {
+          "type": "success",
+          "message": "state.messageText",
+          "showIcon": true,
+          "aria-label": "Success notification"
+        },
+        "styles": {
+          "borderRadius": "8px",
+          "display": "state.messageType === 'success' ? 'flex' : 'none'"
+        }
+      },
+      "errorAlert": {
+        "type": "Alert",
+        "label": null,
+        "bind": "state.messageText",
+        "onClick": null,
+        "props": {
+          "type": "error",
+          "message": "state.messageText",
+          "showIcon": true,
+          "aria-label": "Error notification"
+        },
+        "styles": {
+          "borderRadius": "8px",
+          "display": "state.messageType === 'error' ? 'flex' : 'none'"
+        }
+      },
+      "resultContainer": {
+        "type": "div",
+        "label": null,
+        "bind": "state.gpaResult",
+        "onClick": null,
+        "props": {
+          "aria-label": "GPA result display area",
+          "aria-live": "polite"
+        },
+        "styles": {
+          "marginTop": "24px",
+          "display": "state.gpaResult !== null ? 'block' : 'none'",
+          "transition": "opacity 250ms ease"
+        }
+      },
+      "resultDivider": {
+        "type": "Divider",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {},
+        "styles": {
+          "margin": "0 0 16px 0"
+        }
+      },
+      "resultLabel": {
+        "type": "Typography.Text",
+        "label": "Your GPA",
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "strong": true
+        },
+        "styles": {
+          "display": "block",
+          "textAlign": "center",
+          "fontSize": "14px",
+          "color": "#64748b",
+          "textTransform": "uppercase",
+          "letterSpacing": "0.08em",
+          "marginBottom": "4px"
+        }
+      },
+      "resultValue": {
+        "type": "Typography.Title",
+        "label": null,
+        "bind": "state.gpaResult",
+        "onClick": null,
+        "props": {
+          "level": 1,
+          "aria-label": "Calculated GPA value"
+        },
+        "styles": {
+          "textAlign": "center",
+          "color": "#0ea5e9",
+          "fontSize": "56px",
+          "fontWeight": "800",
+          "margin": "0",
+          "lineHeight": "1.1"
+        }
+      },
+      "resultSubtext": {
+        "type": "Typography.Text",
+        "label": "out of 100",
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "type": "secondary"
+        },
+        "styles": {
+          "display": "block",
+          "textAlign": "center",
+          "fontSize": "13px",
+          "color": "#94a3b8",
+          "marginTop": "4px"
+        }
+      },
+      "gpaForm": {
+        "type": "Form",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "layout": "vertical",
+          "aria-label": "GPA calculation form"
+        },
+        "styles": {
+          "width": "100%"
+        }
+      }
+    }
+  },
+  "layout_ir": {
+    "root": "pageWrapper",
+    "children": {
+      "pageWrapper": [
+        "formCard"
+      ],
+      "formCard": [
+        "pageTitle",
+        "pageSubtitle",
+        "gpaForm",
+        "feedbackContainer",
+        "resultContainer"
+      ],
+      "gpaForm": [
+        "subject1FormItem",
+        "subject2FormItem",
+        "subject3FormItem",
+        "subject4FormItem",
+        "subject5FormItem",
+        "calculateButton"
+      ],
+      "subject1FormItem": [
+        "subject1Input"
+      ],
+      "subject2FormItem": [
+        "subject2Input"
+      ],
+      "subject3FormItem": [
+        "subject3Input"
+      ],
+      "subject4FormItem": [
+        "subject4Input"
+      ],
+      "subject5FormItem": [
+        "subject5Input"
+      ],
+      "feedbackContainer": [
+        "successAlert",
+        "errorAlert"
+      ],
+      "resultContainer": [
+        "resultDivider",
+        "resultLabel",
+        "resultValue",
+        "resultSubtext"
+      ]
+    },
+    "layout": {
+      "pageWrapper": {
+        "type": "vertical",
+        "gap": 0
+      },
+      "formCard": {
+        "type": "vertical",
+        "gap": 0
+      },
+      "gpaForm": {
+        "type": "vertical",
+        "gap": 0
+      },
+      "subject1FormItem": {
+        "type": "vertical",
+        "gap": 4
+      },
+      "subject2FormItem": {
+        "type": "vertical",
+        "gap": 4
+      },
+      "subject3FormItem": {
+        "type": "vertical",
+        "gap": 4
+      },
+      "subject4FormItem": {
+        "type": "vertical",
+        "gap": 4
+      },
+      "subject5FormItem": {
+        "type": "vertical",
+        "gap": 4
+      },
+      "feedbackContainer": {
+        "type": "vertical",
+        "gap": 8
+      },
+      "resultContainer": {
+        "type": "vertical",
+        "gap": 4
+      }
+    },
+    "layout_zones": [
+      {
+        "zone_id": "mainFormZone",
+        "component": "formCard",
+        "anchor": "center",
+        "size_hint": "auto",
+        "z_layer": "base",
+        "notes": "Centered card containing the full GPA calculator form, inputs, button, feedback and result"
+      },
+      {
+        "zone_id": "feedbackZone",
+        "component": "feedbackContainer",
+        "anchor": "center",
+        "size_hint": "full-width",
+        "z_layer": "base",
+        "notes": "Alert messages shown conditionally based on messageType state; role=alert for screen readers"
+      },
+      {
+        "zone_id": "resultZone",
+        "component": "resultContainer",
+        "anchor": "center",
+        "size_hint": "full-width",
+        "z_layer": "base",
+        "notes": "GPA result display shown only when gpaResult is not null; animates in with opacity transition"
+      }
+    ]
+  }
+}

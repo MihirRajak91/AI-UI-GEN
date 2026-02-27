@@ -1,0 +1,978 @@
+{
+  "page_ir": {
+    "page_goal": "Personal details page with profile form fields, client-side validation, save draft and submit actions, responsive layout, and accessibility labels",
+    "style": {
+      "tone": "professional",
+      "theme": "light",
+      "density": "comfortable",
+      "color_intent": "neutral"
+    },
+    "accessibility": {
+      "required_labels": [
+        "firstName",
+        "lastName",
+        "email",
+        "phone",
+        "dateOfBirth",
+        "address",
+        "city",
+        "country",
+        "postalCode",
+        "saveDraftButton",
+        "submitButton"
+      ]
+    },
+    "responsive": {
+      "breakpoints": {
+        "mobile": 576,
+        "tablet": 768,
+        "desktop": 1024
+      },
+      "collapse_rules": [
+        "Stack form fields vertically on mobile",
+        "Two-column layout on tablet and above"
+      ],
+      "hidden_on_small": []
+    },
+    "constraints": [
+      "Email must be valid format",
+      "Phone must be valid format",
+      "All required fields must be filled before submit"
+    ]
+  },
+  "data_ir": {
+    "state": {
+      "firstName": {
+        "type": "string",
+        "initial": "",
+        "required": true,
+        "constraints": {
+          "minLength": 1,
+          "maxLength": 50
+        }
+      },
+      "lastName": {
+        "type": "string",
+        "initial": "",
+        "required": true,
+        "constraints": {
+          "minLength": 1,
+          "maxLength": 50
+        }
+      },
+      "email": {
+        "type": "string",
+        "initial": "",
+        "required": true,
+        "constraints": {
+          "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"
+        }
+      },
+      "phone": {
+        "type": "string",
+        "initial": "",
+        "required": false,
+        "constraints": {
+          "pattern": "^[+]?[(]?[0-9]{1,4}[)]?[-\\s\\.]?[(]?[0-9]{1,4}[)]?[-\\s\\.]?[0-9]{1,9}$"
+        }
+      },
+      "dateOfBirth": {
+        "type": "date",
+        "initial": null,
+        "required": false,
+        "constraints": {}
+      },
+      "address": {
+        "type": "string",
+        "initial": "",
+        "required": false,
+        "constraints": {
+          "maxLength": 200
+        }
+      },
+      "city": {
+        "type": "string",
+        "initial": "",
+        "required": false,
+        "constraints": {
+          "maxLength": 100
+        }
+      },
+      "country": {
+        "type": "string",
+        "initial": "",
+        "required": false,
+        "constraints": {
+          "maxLength": 100
+        }
+      },
+      "postalCode": {
+        "type": "string",
+        "initial": "",
+        "required": false,
+        "constraints": {
+          "maxLength": 20
+        }
+      },
+      "isDraft": {
+        "type": "boolean",
+        "initial": true,
+        "required": false,
+        "constraints": {}
+      },
+      "isSubmitting": {
+        "type": "boolean",
+        "initial": false,
+        "required": false,
+        "constraints": {}
+      }
+    },
+    "derived": {
+      "isFormValid": {
+        "type": "boolean",
+        "expr": "state.firstName.length > 0 && state.lastName.length > 0 && /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(state.email)"
+      },
+      "formCompleteness": {
+        "type": "number",
+        "expr": "((state.firstName ? 1 : 0) + (state.lastName ? 1 : 0) + (state.email ? 1 : 0) + (state.phone ? 1 : 0) + (state.dateOfBirth ? 1 : 0) + (state.address ? 1 : 0) + (state.city ? 1 : 0) + (state.country ? 1 : 0) + (state.postalCode ? 1 : 0)) / 9 * 100"
+      }
+    }
+  },
+  "data_model_ir": {
+    "entities": {
+      "personalDetails": {
+        "name": "PersonalDetails",
+        "fields": [
+          "firstName",
+          "lastName",
+          "email",
+          "phone",
+          "dateOfBirth",
+          "address",
+          "city",
+          "country",
+          "postalCode"
+        ],
+        "computed": [
+          "isFormValid",
+          "formCompleteness"
+        ],
+        "display_fields": [
+          "firstName",
+          "lastName",
+          "email"
+        ],
+        "filters": []
+      }
+    }
+  },
+  "behaviour_ir": {
+    "events": {
+      "updateFirstName": {
+        "type": "mutation",
+        "updates": [
+          {
+            "target": "state.firstName",
+            "expr": "event.target.value"
+          }
+        ]
+      },
+      "updateLastName": {
+        "type": "mutation",
+        "updates": [
+          {
+            "target": "state.lastName",
+            "expr": "event.target.value"
+          }
+        ]
+      },
+      "updateEmail": {
+        "type": "mutation",
+        "updates": [
+          {
+            "target": "state.email",
+            "expr": "event.target.value"
+          }
+        ]
+      },
+      "updatePhone": {
+        "type": "mutation",
+        "updates": [
+          {
+            "target": "state.phone",
+            "expr": "event.target.value"
+          }
+        ]
+      },
+      "updateDateOfBirth": {
+        "type": "mutation",
+        "updates": [
+          {
+            "target": "state.dateOfBirth",
+            "expr": "event"
+          }
+        ]
+      },
+      "updateAddress": {
+        "type": "mutation",
+        "updates": [
+          {
+            "target": "state.address",
+            "expr": "event.target.value"
+          }
+        ]
+      },
+      "updateCity": {
+        "type": "mutation",
+        "updates": [
+          {
+            "target": "state.city",
+            "expr": "event.target.value"
+          }
+        ]
+      },
+      "updateCountry": {
+        "type": "mutation",
+        "updates": [
+          {
+            "target": "state.country",
+            "expr": "event.target.value"
+          }
+        ]
+      },
+      "updatePostalCode": {
+        "type": "mutation",
+        "updates": [
+          {
+            "target": "state.postalCode",
+            "expr": "event.target.value"
+          }
+        ]
+      }
+    },
+    "actions": {
+      "saveDraft": {
+        "action_id": "saveDraft",
+        "trigger": "button_click",
+        "target_component_id": "saveDraftButton",
+        "operation": "save_draft",
+        "payload": {
+          "firstName": "state.firstName",
+          "lastName": "state.lastName",
+          "email": "state.email",
+          "phone": "state.phone",
+          "dateOfBirth": "state.dateOfBirth",
+          "address": "state.address",
+          "city": "state.city",
+          "country": "state.country",
+          "postalCode": "state.postalCode",
+          "isDraft": true
+        },
+        "validation_rules": [],
+        "requires_confirmation": false,
+        "updates": [
+          {
+            "target": "state.isDraft",
+            "expr": "true"
+          }
+        ]
+      },
+      "submitForm": {
+        "action_id": "submitForm",
+        "trigger": "button_click",
+        "target_component_id": "submitButton",
+        "operation": "submit_form",
+        "payload": {
+          "firstName": "state.firstName",
+          "lastName": "state.lastName",
+          "email": "state.email",
+          "phone": "state.phone",
+          "dateOfBirth": "state.dateOfBirth",
+          "address": "state.address",
+          "city": "state.city",
+          "country": "state.country",
+          "postalCode": "state.postalCode",
+          "isDraft": false
+        },
+        "validation_rules": [
+          "state.firstName.length > 0",
+          "state.lastName.length > 0",
+          "/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(state.email)"
+        ],
+        "requires_confirmation": true,
+        "updates": [
+          {
+            "target": "state.isSubmitting",
+            "expr": "true"
+          },
+          {
+            "target": "state.isDraft",
+            "expr": "false"
+          }
+        ]
+      }
+    },
+    "feedback": {
+      "saveDraft": {
+        "action_id": "saveDraft",
+        "loading_indicator": "spinner",
+        "success_message": "Draft saved successfully",
+        "error_message": "Failed to save draft. Please try again.",
+        "ui_updates": []
+      },
+      "submitForm": {
+        "action_id": "submitForm",
+        "loading_indicator": "spinner",
+        "success_message": "Personal details submitted successfully",
+        "error_message": "Failed to submit form. Please check all required fields and try again.",
+        "ui_updates": [
+          {
+            "target": "state.isSubmitting",
+            "expr": "false"
+          }
+        ]
+      }
+    }
+  },
+  "component_ir": {
+    "library": "antd",
+    "theme": {
+      "primaryColor": "#1677ff",
+      "secondaryColor": "#52c41a",
+      "fontFamily": "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      "borderRadius": 8
+    },
+    "components": {
+      "rootContainer": {
+        "type": "div",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "className": "personal-details-page"
+        },
+        "styles": {
+          "maxWidth": "1200px",
+          "margin": "0 auto",
+          "padding": "24px"
+        }
+      },
+      "pageTitle": {
+        "type": "Typography.Title",
+        "label": "Personal Details",
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "level": 1
+        },
+        "styles": {
+          "marginBottom": "24px"
+        }
+      },
+      "formContainer": {
+        "type": "Form",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "layout": "vertical",
+          "size": "large"
+        },
+        "styles": {
+          "backgroundColor": "#ffffff",
+          "padding": "32px",
+          "borderRadius": "8px",
+          "boxShadow": "0 2px 8px rgba(0,0,0,0.1)"
+        }
+      },
+      "basicInfoSection": {
+        "type": "div",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "className": "form-section"
+        },
+        "styles": {
+          "marginBottom": "32px"
+        }
+      },
+      "sectionTitle": {
+        "type": "Typography.Title",
+        "label": "Basic Information",
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "level": 3
+        },
+        "styles": {
+          "marginBottom": "16px"
+        }
+      },
+      "nameRow": {
+        "type": "Row",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "gutter": 16
+        },
+        "styles": {}
+      },
+      "firstNameCol": {
+        "type": "Col",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "xs": 24,
+          "sm": 12
+        },
+        "styles": {}
+      },
+      "firstNameFormItem": {
+        "type": "Form.Item",
+        "label": "First Name",
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "required": true,
+          "rules": [
+            {
+              "required": true,
+              "message": "Please enter your first name"
+            }
+          ]
+        },
+        "styles": {}
+      },
+      "firstNameInput": {
+        "type": "Input",
+        "label": null,
+        "bind": "state.firstName",
+        "onClick": null,
+        "props": {
+          "placeholder": "Enter first name",
+          "maxLength": 50,
+          "aria-label": "First Name",
+          "onChange": "updateFirstName"
+        },
+        "styles": {}
+      },
+      "lastNameCol": {
+        "type": "Col",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "xs": 24,
+          "sm": 12
+        },
+        "styles": {}
+      },
+      "lastNameFormItem": {
+        "type": "Form.Item",
+        "label": "Last Name",
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "required": true,
+          "rules": [
+            {
+              "required": true,
+              "message": "Please enter your last name"
+            }
+          ]
+        },
+        "styles": {}
+      },
+      "lastNameInput": {
+        "type": "Input",
+        "label": null,
+        "bind": "state.lastName",
+        "onClick": null,
+        "props": {
+          "placeholder": "Enter last name",
+          "maxLength": 50,
+          "aria-label": "Last Name",
+          "onChange": "updateLastName"
+        },
+        "styles": {}
+      },
+      "contactRow": {
+        "type": "Row",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "gutter": 16
+        },
+        "styles": {}
+      },
+      "emailCol": {
+        "type": "Col",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "xs": 24,
+          "sm": 12
+        },
+        "styles": {}
+      },
+      "emailFormItem": {
+        "type": "Form.Item",
+        "label": "Email",
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "required": true,
+          "rules": [
+            {
+              "required": true,
+              "message": "Please enter your email"
+            },
+            {
+              "type": "email",
+              "message": "Please enter a valid email"
+            }
+          ]
+        },
+        "styles": {}
+      },
+      "emailInput": {
+        "type": "Input",
+        "label": null,
+        "bind": "state.email",
+        "onClick": null,
+        "props": {
+          "placeholder": "Enter email address",
+          "type": "email",
+          "aria-label": "Email",
+          "onChange": "updateEmail"
+        },
+        "styles": {}
+      },
+      "phoneCol": {
+        "type": "Col",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "xs": 24,
+          "sm": 12
+        },
+        "styles": {}
+      },
+      "phoneFormItem": {
+        "type": "Form.Item",
+        "label": "Phone",
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "required": false
+        },
+        "styles": {}
+      },
+      "phoneInput": {
+        "type": "Input",
+        "label": null,
+        "bind": "state.phone",
+        "onClick": null,
+        "props": {
+          "placeholder": "Enter phone number",
+          "aria-label": "Phone",
+          "onChange": "updatePhone"
+        },
+        "styles": {}
+      },
+      "dobFormItem": {
+        "type": "Form.Item",
+        "label": "Date of Birth",
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "required": false
+        },
+        "styles": {}
+      },
+      "dobPicker": {
+        "type": "DatePicker",
+        "label": null,
+        "bind": "state.dateOfBirth",
+        "onClick": null,
+        "props": {
+          "placeholder": "Select date of birth",
+          "style": {
+            "width": "100%"
+          },
+          "aria-label": "Date of Birth",
+          "onChange": "updateDateOfBirth"
+        },
+        "styles": {}
+      },
+      "addressSection": {
+        "type": "div",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "className": "form-section"
+        },
+        "styles": {
+          "marginBottom": "32px"
+        }
+      },
+      "addressSectionTitle": {
+        "type": "Typography.Title",
+        "label": "Address Information",
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "level": 3
+        },
+        "styles": {
+          "marginBottom": "16px"
+        }
+      },
+      "addressFormItem": {
+        "type": "Form.Item",
+        "label": "Address",
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "required": false
+        },
+        "styles": {}
+      },
+      "addressInput": {
+        "type": "Input.TextArea",
+        "label": null,
+        "bind": "state.address",
+        "onClick": null,
+        "props": {
+          "placeholder": "Enter street address",
+          "rows": 3,
+          "maxLength": 200,
+          "aria-label": "Address",
+          "onChange": "updateAddress"
+        },
+        "styles": {}
+      },
+      "locationRow": {
+        "type": "Row",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "gutter": 16
+        },
+        "styles": {}
+      },
+      "cityCol": {
+        "type": "Col",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "xs": 24,
+          "sm": 8
+        },
+        "styles": {}
+      },
+      "cityFormItem": {
+        "type": "Form.Item",
+        "label": "City",
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "required": false
+        },
+        "styles": {}
+      },
+      "cityInput": {
+        "type": "Input",
+        "label": null,
+        "bind": "state.city",
+        "onClick": null,
+        "props": {
+          "placeholder": "Enter city",
+          "maxLength": 100,
+          "aria-label": "City",
+          "onChange": "updateCity"
+        },
+        "styles": {}
+      },
+      "countryCol": {
+        "type": "Col",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "xs": 24,
+          "sm": 8
+        },
+        "styles": {}
+      },
+      "countryFormItem": {
+        "type": "Form.Item",
+        "label": "Country",
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "required": false
+        },
+        "styles": {}
+      },
+      "countryInput": {
+        "type": "Input",
+        "label": null,
+        "bind": "state.country",
+        "onClick": null,
+        "props": {
+          "placeholder": "Enter country",
+          "maxLength": 100,
+          "aria-label": "Country",
+          "onChange": "updateCountry"
+        },
+        "styles": {}
+      },
+      "postalCodeCol": {
+        "type": "Col",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "xs": 24,
+          "sm": 8
+        },
+        "styles": {}
+      },
+      "postalCodeFormItem": {
+        "type": "Form.Item",
+        "label": "Postal Code",
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "required": false
+        },
+        "styles": {}
+      },
+      "postalCodeInput": {
+        "type": "Input",
+        "label": null,
+        "bind": "state.postalCode",
+        "onClick": null,
+        "props": {
+          "placeholder": "Enter postal code",
+          "maxLength": 20,
+          "aria-label": "Postal Code",
+          "onChange": "updatePostalCode"
+        },
+        "styles": {}
+      },
+      "buttonRow": {
+        "type": "Row",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {
+          "gutter": 16,
+          "justify": "end"
+        },
+        "styles": {
+          "marginTop": "32px"
+        }
+      },
+      "saveDraftCol": {
+        "type": "Col",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {},
+        "styles": {}
+      },
+      "saveDraftButton": {
+        "type": "Button",
+        "label": "Save Draft",
+        "bind": null,
+        "onClick": "saveDraft",
+        "props": {
+          "size": "large",
+          "aria-label": "Save Draft"
+        },
+        "styles": {}
+      },
+      "submitCol": {
+        "type": "Col",
+        "label": null,
+        "bind": null,
+        "onClick": null,
+        "props": {},
+        "styles": {}
+      },
+      "submitButton": {
+        "type": "Button",
+        "label": "Submit",
+        "bind": null,
+        "onClick": "submitForm",
+        "props": {
+          "type": "primary",
+          "size": "large",
+          "disabled": "!derived.isFormValid",
+          "loading": "state.isSubmitting",
+          "aria-label": "Submit"
+        },
+        "styles": {}
+      }
+    }
+  },
+  "layout_ir": {
+    "root": "rootContainer",
+    "children": {
+      "rootContainer": [
+        "pageTitle",
+        "formContainer"
+      ],
+      "formContainer": [
+        "basicInfoSection",
+        "addressSection",
+        "buttonRow"
+      ],
+      "basicInfoSection": [
+        "sectionTitle",
+        "nameRow",
+        "contactRow",
+        "dobFormItem"
+      ],
+      "nameRow": [
+        "firstNameCol",
+        "lastNameCol"
+      ],
+      "firstNameCol": [
+        "firstNameFormItem"
+      ],
+      "firstNameFormItem": [
+        "firstNameInput"
+      ],
+      "lastNameCol": [
+        "lastNameFormItem"
+      ],
+      "lastNameFormItem": [
+        "lastNameInput"
+      ],
+      "contactRow": [
+        "emailCol",
+        "phoneCol"
+      ],
+      "emailCol": [
+        "emailFormItem"
+      ],
+      "emailFormItem": [
+        "emailInput"
+      ],
+      "phoneCol": [
+        "phoneFormItem"
+      ],
+      "phoneFormItem": [
+        "phoneInput"
+      ],
+      "dobFormItem": [
+        "dobPicker"
+      ],
+      "addressSection": [
+        "addressSectionTitle",
+        "addressFormItem",
+        "locationRow"
+      ],
+      "addressFormItem": [
+        "addressInput"
+      ],
+      "locationRow": [
+        "cityCol",
+        "countryCol",
+        "postalCodeCol"
+      ],
+      "cityCol": [
+        "cityFormItem"
+      ],
+      "cityFormItem": [
+        "cityInput"
+      ],
+      "countryCol": [
+        "countryFormItem"
+      ],
+      "countryFormItem": [
+        "countryInput"
+      ],
+      "postalCodeCol": [
+        "postalCodeFormItem"
+      ],
+      "postalCodeFormItem": [
+        "postalCodeInput"
+      ],
+      "buttonRow": [
+        "saveDraftCol",
+        "submitCol"
+      ],
+      "saveDraftCol": [
+        "saveDraftButton"
+      ],
+      "submitCol": [
+        "submitButton"
+      ]
+    },
+    "layout": {
+      "rootContainer": {
+        "type": "vertical",
+        "gap": 24
+      },
+      "formContainer": {
+        "type": "vertical",
+        "gap": 0
+      },
+      "basicInfoSection": {
+        "type": "vertical",
+        "gap": 16
+      },
+      "nameRow": {
+        "type": "horizontal",
+        "gap": 16
+      },
+      "contactRow": {
+        "type": "horizontal",
+        "gap": 16
+      },
+      "addressSection": {
+        "type": "vertical",
+        "gap": 16
+      },
+      "locationRow": {
+        "type": "horizontal",
+        "gap": 16
+      },
+      "buttonRow": {
+        "type": "horizontal",
+        "gap": 16
+      }
+    },
+    "layout_zones": [
+      {
+        "zone_id": "main_form_zone",
+        "component": "formContainer",
+        "anchor": "center",
+        "size_hint": "full-width",
+        "z_layer": "base",
+        "notes": "Main form container with all personal details fields"
+      },
+      {
+        "zone_id": "action_buttons_zone",
+        "component": "buttonRow",
+        "anchor": "bottom-right",
+        "size_hint": "auto",
+        "z_layer": "base",
+        "notes": "Action buttons for save draft and submit"
+      }
+    ]
+  }
+}

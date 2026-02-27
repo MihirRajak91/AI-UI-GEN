@@ -1,0 +1,7 @@
+tests/
+docs/
+.env
+.venv
+__pycache__
+logs
+sessions
